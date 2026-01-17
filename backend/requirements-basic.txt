@@ -1,0 +1,24 @@
+# Basic dependencies for minimal functionality
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic>=1.8.0,<2.0.0  # Use older pydantic to avoid rust requirement
+
+# Machine Learning & AI (simplified)
+numpy>=1.21.0
+scikit-learn>=1.0.0
+
+# Text Processing (basic)
+nltk>=3.8.0
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Rate Limiting & Security (basic)
+python-multipart>=0.0.6
+
+# Optional AI libraries (install manually if needed)
+# sentence-transformers
+# transformers
+# torch
+# faiss-cpu

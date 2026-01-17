@@ -1,0 +1,44 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic>=1.8.0,<2.0.0
+
+# Machine Learning & AI
+torch>=2.0.0
+transformers>=4.35.0
+sentence-transformers>=2.2.0
+scikit-learn>=1.3.0
+numpy>=1.24.0
+
+# Vector Search & Similarity
+faiss-cpu>=1.7.0
+
+# Text Processing
+spacy>=3.7.0
+nltk>=3.8.0
+
+# FastText (optional - for better embeddings)
+fasttext-wheel>=0.9.0
+
+# Rate Limiting & Security
+slowapi>=0.1.9
+python-multipart>=0.0.6
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Development & Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.25.0
+
+# Logging & Monitoring
+structlog>=23.2.0
+
+# Optional: GPU support (uncomment if needed)
+# torch[cuda]>=2.0.0
+
+# Optional: CPU-optimized versions (for production)
+# intel-torch>=2.0.0  # For Intel CPUs
+# mkl>=2023.0.0       # For Intel MKL optimization
