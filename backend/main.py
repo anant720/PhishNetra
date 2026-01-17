@@ -49,11 +49,13 @@ app.add_middleware(
 )
 
 # Trusted host middleware (for production)
-if settings.environment == "production":
-    app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=["yourdomain.com", "api.yourdomain.com"]  # Configure for production
-    )
+# Disabled for Render - Render handles host validation
+# Uncomment and configure if using custom domain
+# if settings.environment == "production":
+#     app.add_middleware(
+#         TrustedHostMiddleware,
+#         allowed_hosts=["yourdomain.com", "api.yourdomain.com", "*.onrender.com"]
+#     )
 
 # Request logging middleware
 @app.middleware("http")
