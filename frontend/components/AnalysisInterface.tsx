@@ -17,7 +17,11 @@ export function AnalysisInterface({ onAnalysisComplete }: AnalysisInterfaceProps
   // API mutation for analysis
   const analyzeMutation = useMutation({
     mutationFn: async (text: string) => {
-      const response = await axios.post('http://localhost:8000/api/v1/analyze', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL 
+        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/analyze`
+        : '/api/v1/analyze'
+      
+      const response = await axios.post(apiUrl, {
         text: text,
         include_explainability: true,
         format_type: 'full'
