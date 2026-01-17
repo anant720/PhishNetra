@@ -64,8 +64,38 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", env="ENVIRONMENT")
     debug_mode: bool = Field(default=False, env="DEBUG_MODE")
 
-    # CORS Configuration
-    cors_origins: List[str] = Field(default=["http://localhost:3000", "http://localhost:3001"], env="CORS_ORIGINS")
+    # CORS Configuration - stored as string, parsed to list
+    _cors_origins_str: str = Field(default="http://localhost:3000,http://localhost:3001", env="CORS_ORIGINS")
+    
+    @property
+    def cors_origins(self) -> List[str]:
+        """Parse CORS origins from string (comma-separated or JSON array)"""
+        raw = self._cors_origins_str if hasattr(self, '_cors_origins_str') else ''
+        if not raw or (isinstance(raw, str) and raw.strip() == ''):
+            return ["http://localhost:3000", "http://localhost:3001"]
+        
+        # Try JSON first (for backward compatibility)
+        if isinstance(raw, str):
+            try:
+                import json
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return parsed
+            except (json.JSONDecodeError, ValueError, TypeError):
+                pass
+            
+            # Fall back to comma-separated string
+            origins = [origin.strip() for origin in raw.split(',') if origin.strip()]
+            # Handle wildcard
+            if origins and origins[0] == '*':
+                return ['*']
+            return origins if origins else ["http://localhost:3000", "http://localhost:3001"]
+        
+        # If somehow it's already a list
+        if isinstance(raw, list):
+            return raw
+        
+        return ["http://localhost:3000", "http://localhost:3001"]
 
     # Database Configuration (for future use)
     database_url: Optional[str] = Field(default=None, env="DATABASE_URL")
