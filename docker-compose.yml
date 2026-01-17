@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PhishNetra Backend
+  backend:
+    build:
+      context: .
+      dockerfile: packages/docker/Dockerfile.backend
+    container_name: phishnetra-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - API_WORKERS=1
+      - ENVIRONMENT=production
+      - DEBUG_MODE=false
+      - MODEL_CACHE_DIR=./models
+      - FASTTEXT_MODEL_PATH=./models/fasttext_scam.bin
+      - SENTENCE_TRANSFORMER_MODEL=all-MiniLM-L6-v2
+      - DISTILBERT_MODEL_PATH=./models/distilbert_scam
+      - FAISS_INDEX_PATH=./models/scam_index.faiss
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=*
+    volumes:
+      - ./apps/backend/models:/app/models
+      - ./apps/backend/logs:/app/logs
+    networks:
+      - phishnetra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PhishNetra Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/docker/Dockerfile.frontend
+    container_name: phishnetra-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - API_BASE_URL=http://backend:8000
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - phishnetra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  phishnetra-network:
+    driver: bridge
+
+volumes:
+  models:
+    driver: local
+  logs:
+    driver: local
